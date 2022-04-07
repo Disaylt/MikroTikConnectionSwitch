@@ -16,22 +16,38 @@ namespace MikroTikConnectionSwitch
             _connectionData = connectionData;
         }
 
-        private string GetSecretId(string name)
+        public string GetSecretId(string name)
         {
-            using ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api);
-            connection.Open(_connectionData.Host, _connectionData.User, _connectionData.Password);
+            string id;
+            try
+            {
+                using ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api);
+                connection.Open(_connectionData.Host, _connectionData.User, _connectionData.Password);
 
-            var cmd = connection.CreateCommand("ppp/secret/print");
-            var id = cmd.ExecuteList().Single(x => x.Words["name"] == name).GetId();
+                var cmd = connection.CreateCommand("ppp/secret/print");
+                id = cmd.ExecuteList().Single(x => x.Words["name"] == name).GetId();
+            }
+            catch
+            {
+                id = string.Empty;
+            }
             return id;
         }
-        private string GetConnectionId(string name)
+        public string GetConnectionId(string name)
         {
-            using ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api);
-            connection.Open(_connectionData.Host, _connectionData.User, _connectionData.Password);
+            string id;
+            try
+            {
+                using ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api);
+                connection.Open(_connectionData.Host, _connectionData.User, _connectionData.Password);
 
-            var cmd = connection.CreateCommand("ppp/active/print");
-            var id = cmd.ExecuteList().Single(x => x.Words["name"] == name).GetId();
+                var cmd = connection.CreateCommand("ppp/active/print");
+                id = cmd.ExecuteList().Single(x => x.Words["name"] == name).GetId();
+            }
+            catch
+            {
+                id = string.Empty;
+            }
             return id;
         }
         public SwitchOffData GetSwitchOffData(string name)
